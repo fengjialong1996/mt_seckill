@@ -4,9 +4,18 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.common.exceptions import NoSuchElementException
 import datetime
 import time
-from common.constant import jingdong, tianmao  
+import logging
+from common.constant import platform2act_pwd, platform2url, platform2start_timestamp
+
+logger = logging.getLogger()
+handler = logging.StreamHandler()
+formatter = logging.Formatter("%(asctime)s %(name)-8s %(levelname)-8s %(message)s")
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+logger.setLevel(logging.INFO)
 
 class ChromeDriver():
     """
@@ -27,48 +36,20 @@ class ChromeDriver():
         options.add_experimental_option('prefs', prefs)
         self.driver = webdriver.Chrome(executable_path=executable_path, options=options)
 
-def frame_is_exist(url):
-    # 创建一个浏览器实例
-    driver = webdriver.Chrome()
-    # 打开页面
-    driver.get(url)
-    # 获取页面中所有的frame元素
-    frames = driver.find_element(by=By.TAG_NAME, value="frame") + driver.find_element(by=By.TAG_NAME, value="iframe")
-    # 如果frames列表不为空，则页面中存在frame
-    if frames:
-        print("页面中存在frame")
-    else:
-        print("页面中不存在frame")
-    # 关闭浏览器
-    driver.quit()
-
-
-def login_jingdong(driver):
-    driver.get(jingdong["login_url"])
-    driver.find_element(by=By.LINK_TEXT, value='账户登录').click()
-    driver.find_element(by=By.NAME, value='loginname').send_keys('18827201249')
-    driver.find_element(by=By.NAME, value='nloginpwd').send_keys('FJL960929')
-    driver.find_element(by=By.ID, value='loginsubmit').click()
-    while 'login' in driver.current_url:
-        print(driver.current_url)
-        time.sleep(1)
-
 def login_tianmao(driver):
-    driver.get(tianmao["login_url"])
-    time.sleep(5)
+    driver.get(platform2url["tianmao"]["login_url"])
     driver.switch_to.frame(driver.find_element(by=By.ID, value='J_loginIframe'))
     # WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'iconfont icon-password')))
-    driver.find_element(by=By.ID, value='fm-login-id').send_keys('18827201249')
-    driver.find_element(by=By.ID, value='fm-login-password').send_keys('FJL960929')
+    driver.find_element(by=By.ID, value='fm-login-id').send_keys(platform2act_pwd["tianmao"]["account"])
+    driver.find_element(by=By.ID, value='fm-login-password').send_keys(platform2act_pwd["tianmao"]["password"])
     driver.find_element(by=By.CLASS_NAME, value='fm-btn').click()
     while 'login' in driver.current_url:
         print(driver.current_url)
         time.sleep(1)
+    logger.info("login in tianmao successfully")
 
 def login(driver, platform):
     match platform:
-        case "jingdong":
-            login_jingdong(driver)
         case "tianmao":
             login_tianmao(driver)
         case _:
@@ -101,18 +82,47 @@ if __name__ == '__main__':
     login(driver=chrome_driver, platform="tianmao")
     
     # 3. open maitai page
-    tianmao_maitai_url = "https://chaoshi.detail.tmall.com/item.htm?addressId=17891842192&id=20739895092"
-    frame_is_exist(tianmao_maitai_url)
-    chrome_driver.get(tianmao_maitai_url)
+    chrome_driver.get(platform2url["tianmao"]["maotai_url"])
     
     # 4. buy on time
-    element = chrome_driver.find_element(by=By.ID, value="root").find_element
-    
-    
-    element = chrome_driver.find_element(by=By.XPATH, value="/html/body/div[4]/div/div[2]/div[1]/div[1]/div/div[2]/div[7]/div[1]/button/span")
-    print(element)
-    # buytime = '2022-01-01 00:00:00.000000'
-    # buy_on_time(buytime)
-
+    # time.sleep(6)
+    # buy_button_element_text = ""
+    # while not buy_button_element_text:
+    #     buy_button_element = chrome_driver.find_element(by=By.CSS_SELECTOR, value="[class*=Actions--leftButtons]")
+    #     buy_button_element_text = buy_button_element.text
+    # buy_button_element = chrome_driver.find_element(by=By.CSS_SELECTOR, value="[class*=Actions--leftButtons]")
+    # buy_button_element_text = buy_button_element.text
+    # print("buy_button_element_text:", type(buy_button_element_text), buy_button_element_text)
+    # WebDriverWait(chrome_driver, 10).until(
+    #     EC.text_to_be_present_in_element((By.CSS_SELECTOR, "[class*=Actions--leftButtons]"), "商品已经卖光啦，非常抱歉")
+    # )
+    buy_button_element = chrome_driver.find_element(by=By.CSS_SELECTOR, value="[class*=Actions--leftButtons]")
+    buy_button_element_text = buy_button_element.text
+    while True:
+        print("buy_button_element_text:", type(buy_button_element_text), buy_button_element_text)
+        current_timestamp = int(time.time() * 1000)
+        if current_timestamp > platform2start_timestamp["tianmao"] - 180000:
+        # if True:
+            logger.info("Nowtime: {}, Timestamp:{}. seckill will start in about 3 min".format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), int(time.time() * 1000)))
+            # buy_button_element.refresh()
+            WebDriverWait(chrome_driver, 240).until(
+                EC.text_to_be_present_in_element((By.CSS_SELECTOR, "[class*=Actions--leftButtons]"), "立即购买")
+            )
+            buy_button_element = chrome_driver.find_element(by=By.CSS_SELECTOR, value="[class*=Actions--leftButtons]")
+            buy_button_element_text = buy_button_element.text
+            print("buy_button_element_text:", type(buy_button_element_text), buy_button_element_text)
+            logger.info("Nowtime: {}, Timestamp:{}. seckill is starting".format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), int(time.time() * 1000)))
+            try:
+                for i in range(10):
+                    buy_button_element.click()
+                    print("botton clicked")
+                    time.sleep(0.1)
+                while True:
+                    if 'detail' not in chrome_driver.current_url:
+                        continue
+            except NoSuchElementException:
+                print("click botton failed")
+        else:
+            time.sleep(60)
     print("closing browser")
 
