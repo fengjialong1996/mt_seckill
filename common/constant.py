@@ -8,11 +8,11 @@ def get_the_timestamp(delta_time_stamp=0):
     return the_timestamp
 
 platform2act_pwd = {
-    "tianmao": {
+    "tianmao_acc1": {
         "account" : "18827201249",
         "password" : "FJL960929"
     },
-    "jingdong": {
+    "tianmao_acc2": {
         "account" : "18827201249",
         "password" : "FJL960929"
     }
