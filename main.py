@@ -118,8 +118,10 @@ def run(browser_type: str, acc_pwd: dict) -> None:
     # 4. buy on time
     date_str = datetime.datetime.now().strftime("%m.%d")
     before_text = "即将开始，{} 20:00开售".format(date_str)
+    # before_text = "商品已经卖光啦，非常抱歉"
     current_timestamp = int(time.time() * 1000)
     while True:
+        # if True:
         if platform2start_timestamp["tianmao"] > current_timestamp > platform2start_timestamp["tianmao"] - 7200000:
             logging.info("Nowtime: {}, Timestamp: {}. seckill will start soon".format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), int(time.time() * 1000)))
             WebDriverWait(web_driver, 6).until(
@@ -134,18 +136,18 @@ def run(browser_type: str, acc_pwd: dict) -> None:
             buy_button_element_text = buy_button_element.text
             logging.info("buy_button_element_text: {}".format(buy_button_element_text))
             logging.info("Nowtime: {}, Timestamp: {}. seckill is starting".format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), int(time.time() * 1000)))
-            try:
-                for i in range(10):
+            for i in range(30):
+                logging.info("buy_button_element_text: {}".format(buy_button_element_text))
+                try:
                     buy_button_element.click()
                     print("buy-botton clicked!")
                     logging.info("buy-botton clicked!")
                     time.sleep(0.2)
-                while True:
-                    if 'detail' not in web_driver.current_url:
-                        continue
-            except NoSuchElementException:
-                print("click buy-botton failed!")
-                logging.info("click buy-botton failed!")
+                    while True:
+                        if 'detail' not in web_driver.current_url:
+                            continue
+                except Exception as e:
+                    logging.info("Error message:{}".format(e))
         else:
             logger.warning("Nowtime: {}, Timestamp: {}. Please check the time!!!".format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), int(time.time() * 1000)))
     print("over")
