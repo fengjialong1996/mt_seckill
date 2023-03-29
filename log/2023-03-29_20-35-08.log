@@ -1,0 +1,14 @@
+2023-03-29 20:35:10,975 INFO     Thread-Chrome  opening browser and logining in
+2023-03-29 20:35:11,917 INFO     Thread-Edge    opening browser and logining in
+2023-03-29 20:35:27,878 INFO     Thread-Edge    login in tianmao successfully
+2023-03-29 20:36:10,046 WARNING  Thread-Edge    Nowtime: 2023-03-29 20:36:10, Timestamp: 1680093370046. Please check the time!!!
+2023-03-29 20:36:12,498 WARNING  Thread-Edge    Nowtime: 2023-03-29 20:36:12, Timestamp: 1680093372498. Please check the time!!!
+2023-03-29 20:36:13,823 WARNING  Thread-Edge    Nowtime: 2023-03-29 20:36:13, Timestamp: 1680093373823. Please check the time!!!
+2023-03-29 20:36:15,092 WARNING  Thread-Edge    Nowtime: 2023-03-29 20:36:15, Timestamp: 1680093375092. Please check the time!!!
+2023-03-29 20:36:15,956 WARNING  Thread-Edge    Nowtime: 2023-03-29 20:36:15, Timestamp: 1680093375956. Please check the time!!!
+2023-03-29 20:36:16,380 WARNING  Thread-Edge    Nowtime: 2023-03-29 20:36:16, Timestamp: 1680093376379. Please check the time!!!
+2023-03-29 20:36:16,690 WARNING  Thread-Edge    Nowtime: 2023-03-29 20:36:16, Timestamp: 1680093376690. Please check the time!!!
+2023-03-29 20:36:17,158 WARNING  Thread-Edge    Nowtime: 2023-03-29 20:36:17, Timestamp: 1680093377158. Please check the time!!!
+2023-03-29 20:36:27,991 WARNING  Thread-Edge    Nowtime: 2023-03-29 20:36:27, Timestamp: 1680093387991. Please check the time!!!
+2023-03-29 20:36:29,529 WARNING  Thread-Edge    Nowtime: 2023-03-29 20:36:29, Timestamp: 1680093389529. Please check the time!!!
+2023-03-29 20:36:29,950 WARNING  Thread-Edge    Nowtime: 2023-03-29 20:36:29, Timestamp: 1680093389950. Please check the time!!!

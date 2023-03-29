@@ -15,10 +15,14 @@ import threading
 from common.constant import platform2act_pwd, platform2url, platform2start_timestamp
 
 logger = logging.getLogger()
-handler = logging.StreamHandler()
+handler_1 = logging.StreamHandler()
+log_file = "./log/{}.log".format(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+handler_2 = logging.FileHandler(filename=log_file, encoding="utf-8")
 formatter = logging.Formatter("%(asctime)s %(levelname)-8s %(threadName)-14s %(message)s")
-handler.setFormatter(formatter)
-logger.addHandler(handler)
+handler_1.setFormatter(formatter)
+handler_2.setFormatter(formatter)
+logger.addHandler(handler_1)
+logger.addHandler(handler_2)
 logger.setLevel(logging.INFO)
 
 
@@ -118,18 +122,22 @@ def run(browser_type: str, acc_pwd: dict) -> None:
     # 4. buy on time
     date_str = datetime.datetime.now().strftime("%m.%d")
     before_text = "即将开始，{} 20:00开售".format(date_str)
-    # before_text = "商品已经卖光啦，非常抱歉"
+    before_text = "商品已经卖光啦，非常抱歉"
     current_timestamp = int(time.time() * 1000)
     while True:
         # if True:
-        if platform2start_timestamp["tianmao"] > current_timestamp > platform2start_timestamp["tianmao"] - 7200000:
+        if platform2start_timestamp["tianmao"] + 60000 > current_timestamp > platform2start_timestamp["tianmao"] - 14400000:
             logging.info("Nowtime: {}, Timestamp: {}. seckill will start soon".format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), int(time.time() * 1000)))
-            WebDriverWait(web_driver, 6).until(
-                EC.text_to_be_present_in_element((By.CSS_SELECTOR, "[class*=Actions--leftButtons]"), before_text)
-            )
+            # WebDriverWait(web_driver, 6).until(
+            #     EC.text_to_be_present_in_element((By.CSS_SELECTOR, "[class*=Actions--leftButtons]"), before_text)
+            # )
             buy_button_element_text = web_driver.find_element(by=By.CSS_SELECTOR, value="[class*=Actions--leftButtons]").text
+            for i in range(60):
+                if buy_button_element_text == before_text:
+                    continue
+                time.sleep(0.1)
             logging.info("buy_button_element_text: {}".format(buy_button_element_text))
-            WebDriverWait(web_driver, 7200).until_not(
+            WebDriverWait(web_driver, 14400).until_not(
                 EC.text_to_be_present_in_element((By.CSS_SELECTOR, "[class*=Actions--leftButtons]"), before_text)
             )
             buy_button_element = web_driver.find_element(by=By.CSS_SELECTOR, value="[class*=Actions--leftButtons]")
@@ -143,9 +151,9 @@ def run(browser_type: str, acc_pwd: dict) -> None:
                     print("buy-botton clicked!")
                     logging.info("buy-botton clicked!")
                     time.sleep(0.2)
-                    while True:
-                        if 'detail' not in web_driver.current_url:
-                            continue
+                    # while True:
+                    #     if 'detail' not in web_driver.current_url:
+                    #         continue
                 except Exception as e:
                     logging.info("Error message:{}".format(e))
         else:
