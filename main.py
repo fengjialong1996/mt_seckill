@@ -122,21 +122,24 @@ def run(browser_type: str, acc_pwd: dict) -> None:
     # 4. buy on time
     date_str = datetime.datetime.now().strftime("%m.%d")
     before_text = "即将开始，{} 20:00开售".format(date_str)
-    before_text = "商品已经卖光啦，非常抱歉"
+    # before_text = "商品已经卖光啦，非常抱歉"
     current_timestamp = int(time.time() * 1000)
     while True:
         # if True:
         if platform2start_timestamp["tianmao"] + 60000 > current_timestamp > platform2start_timestamp["tianmao"] - 14400000:
             logging.info("Nowtime: {}, Timestamp: {}. seckill will start soon".format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), int(time.time() * 1000)))
-            # WebDriverWait(web_driver, 6).until(
-            #     EC.text_to_be_present_in_element((By.CSS_SELECTOR, "[class*=Actions--leftButtons]"), before_text)
-            # )
-            buy_button_element_text = web_driver.find_element(by=By.CSS_SELECTOR, value="[class*=Actions--leftButtons]").text
-            for i in range(60):
-                if buy_button_element_text == before_text:
-                    continue
-                time.sleep(0.1)
-            logging.info("buy_button_element_text: {}".format(buy_button_element_text))
+            try:
+                WebDriverWait(web_driver, 6).until(
+                    EC.text_to_be_present_in_element((By.CSS_SELECTOR, "[class*=Actions--leftButtons]"), before_text)
+                )
+            except Exception as e:
+                logging.error("Error message while waiting before_text:{}".format(e))
+            # buy_button_element_text = web_driver.find_element(by=By.CSS_SELECTOR, value="[class*=Actions--leftButtons]").text
+            # for i in range(60):
+            #     if buy_button_element_text == before_text:
+            #         continue
+            #     time.sleep(0.1)
+            logging.info("buy_button_element_text: {}".format(web_driver.find_element(by=By.CSS_SELECTOR, value="[class*=Actions--leftButtons]").text))
             WebDriverWait(web_driver, 14400).until_not(
                 EC.text_to_be_present_in_element((By.CSS_SELECTOR, "[class*=Actions--leftButtons]"), before_text)
             )
@@ -155,7 +158,7 @@ def run(browser_type: str, acc_pwd: dict) -> None:
                     #     if 'detail' not in web_driver.current_url:
                     #         continue
                 except Exception as e:
-                    logging.info("Error message:{}".format(e))
+                    logging.error("Error message while click buy-botton:{}".format(e))
         else:
             logger.warning("Nowtime: {}, Timestamp: {}. Please check the time!!!".format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), int(time.time() * 1000)))
     print("over")
