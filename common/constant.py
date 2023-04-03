@@ -21,7 +21,8 @@ platform2act_pwd = {
 platform2url = {
     "tianmao": {
         "login_url": "https://login.tmall.com/",
-        "maotai_url": "https://chaoshi.detail.tmall.com/item.htm?addressId=17891842192&id=20739895092"
+        "maotai_url": "https://chaoshi.detail.tmall.com/item.htm?addressId=17891842192&id=20739895092",
+        "maotai_buy_url": "https://chaoshi.detail.tmall.com/item.htm?id=20739895092&degrade_pc=true&skuId=4227830352490"
     },
     "jingdong": {
         "login_url": "https://passport.jd.com/new/login.aspx",

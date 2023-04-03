@@ -163,8 +163,34 @@ def run(browser_type: str, acc_pwd: dict) -> None:
             logger.warning("Nowtime: {}, Timestamp: {}. Please check the time!!!".format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), int(time.time() * 1000)))
     print("over")
 
+def run_opt(browser_type: str, acc_pwd: dict) -> None:
+    # 1. init browser driver
+    web_driver: Driver = Driver(browser_type).driver
+    # 2. open browser and login in
+    logging.info("opening browser and logining in")
+    login_tianmao(driver=web_driver, acc_pwd=acc_pwd)
+    # 3. open maitai page
+    web_driver.get(platform2url["tianmao"]["maotai_buy_url"])
+    # 4. buy on time
+    WebDriverWait(web_driver, 14400).until(
+        EC.element_to_be_clickable((By.ID, "J_LinkBuy"))
+    )
+    buy_button_element = web_driver.find_element(by=By.ID, value="J_LinkBuy")
+    buy_button_element_text = buy_button_element.text
+    logging.info("buy_button_element_text: {}".format(buy_button_element_text))
+    for i in range(30):
+        logging.info("buy_button_element_text: {}".format(buy_button_element_text))
+        try:
+            buy_button_element.click()
+            print("buy-botton clicked!")
+            logging.info("buy-botton clicked!")
+            time.sleep(0.2)
+        except Exception as e:
+            logging.error("Error message while click buy-botton:{}".format(e))
+
+
 if __name__ == '__main__':
     t1 = threading.Thread(target=run, name="Thread-Chrome", args=("Chrome", platform2act_pwd["tianmao_acc1"]))
-    t2 = threading.Thread(target=run, name="Thread-Edge", args=("Edge", platform2act_pwd["tianmao_acc2"]))
+    t2 = threading.Thread(target=run_opt, name="Thread-Edge", args=("Edge", platform2act_pwd["tianmao_acc2"]))
     t1.start()
     t2.start()
