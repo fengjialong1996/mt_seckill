@@ -7,7 +7,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.service import Service
+# from selenium.webdriver.common.service import Service
 
 import datetime
 import time
@@ -15,6 +15,7 @@ import logging
 import requests
 import threading
 from common.constant import platform2act_pwd, platform2url, platform2start_timestamp
+from common.common import MyService
 
 logger = logging.getLogger()
 handler_1 = logging.StreamHandler()
@@ -62,8 +63,9 @@ class Driver():
         prefs["credentials_enable_service"] = False  
         prefs["profile.password_manager_enabled"] = False
         options.add_experimental_option('prefs', prefs)
-        self.service = Service(executable=browser_type2execute_path[browser_type])
-        self.driver = browser_type2browser[browser_type](service=self.service, options=options)
+        # self.service = MyService(executable=browser_type2execute_path[browser_type])
+        # self.driver = browser_type2browser[browser_type](service=self.service, options=options)
+        self.driver = webdriver.Chrome(service=webdriver)
 
 def login_tianmao(driver: Driver, acc_pwd: dict) -> None:
     """
@@ -147,7 +149,7 @@ def wait_buy_time(start_timestamp: str, advance: int=0) -> None:
         logging.info("get_current_timestamp():{}".format(get_current_timestamp()))
     return
 
-def run(browser_type: str="Edge", acc_pwd: dict=platform2act_pwd["tianmao_acc1"]) -> None:
+def run(browser_type: str="Chrome", acc_pwd: dict=platform2act_pwd["tianmao_acc1"]) -> None:
     # 1. init browser driver
     web_driver: webdriver.Chrome = Driver(browser_type).driver
     # 2. open browser and login in
